@@ -1,0 +1,40 @@
+{
+  "name": "max",
+  "version": "1.0.0",
+  "description": "web game tools",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm-run-all --parallel security-check open:src",
+    "open:src": "babel-node buildScripts/srcServer.js",
+    "security-check": "nsp check",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maximebl/wzrd.git"
+  },
+  "keywords": [
+    "wzrd"
+  ],
+  "author": "max",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maximebl/wzrd/issues"
+  },
+  "homepage": "https://github.com/maximebl/wzrd#readme",
+  "dependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-latest": "^6.24.1",
+    "css-loader": "^0.28.1",
+    "express": "^4.15.2",
+    "npm-run-all": "^4.0.2",
+    "open": "0.0.5",
+    "style-loader": "^0.17.0",
+    "webpack": "1.13.2",
+    "webpack-dev-middleware": "1.8.4",
+    "webpack-hot-middleware": "2.13.0",
+    "webpack-md5-hash": "0.0.5"
+  }
+}
