@@ -29,12 +29,18 @@
     "babel-preset-latest": "^6.24.1",
     "css-loader": "^0.28.1",
     "express": "^4.15.2",
+    "material-ui": "^1.0.0-alpha.20",
     "npm-run-all": "^4.0.2",
     "open": "0.0.5",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
     "style-loader": "^0.17.0",
-    "webpack": "1.13.2",
+    "webpack": "^1.15.0",
     "webpack-dev-middleware": "1.8.4",
     "webpack-hot-middleware": "2.13.0",
     "webpack-md5-hash": "0.0.5"
+  },
+  "devDependencies": {
+    "babel-preset-react": "^6.24.1"
   }
 }
