@@ -1,5 +1,5 @@
 
-var camera, controls, scene, renderer;
+var camera, controls, renderer;
 
 let cubePlayer;
 
@@ -29,10 +29,10 @@ function init() {
     window.addEventListener('resize', onWindowResize, false);
     document.addEventListener('wheel', onMouseWheelScroll);
 
-	scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0xcccccc, 0.002);
+	window.scene = new THREE.Scene();
+    window.scene.fog = new THREE.FogExp2(0xcccccc, 0.002);
 	renderer = new THREE.WebGLRenderer();
-	renderer.setClearColor( scene.fog.color );
+	renderer.setClearColor( window.scene.fog.color );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( viewportWidth, viewportHeight );
     var container = document.getElementById( 'viewport' );
@@ -53,8 +53,8 @@ function init() {
 	plane.position.x = 0;
 	plane.position.y = 0;
 	plane.position.z = 0;
-// add the plane to the scene
-	scene.add(plane);
+// add the plane to the window.scene
+	window.scene.add(plane);
 // create cube
 	let cubeGeometry = new THREE.CubeGeometry(20, 20, 20, 20, 20, 20);
 	let cubeMaterial = new THREE.MeshLambertMaterial();
@@ -64,17 +64,17 @@ function init() {
 	cubePlayer.position.y = 10;
 	cubePlayer.position.z = 0;
     cubePlayer.add(camera);
-    scene.add(cubePlayer);
+    window.scene.add(cubePlayer);
 
 // lights
 	var light = new THREE.DirectionalLight( 0xffffff );
 	light.position.set( 1, 1, 1 );
-	scene.add( light );
+	window.scene.add( light );
 	var light1 = new THREE.DirectionalLight( 0x002288 );
 	light1.position.set( -1, -1, -1 );
-	scene.add( light1 );
+	window.scene.add( light1 );
 	var light2 = new THREE.AmbientLight( 0x222222 );
-	scene.add( light2 );
+	window.scene.add( light2 );
 
 // movement
     initCameraPosition();
@@ -87,7 +87,7 @@ function init() {
 				break;
 			case 37: // left
 			case 65: // a
-				moveLeft = true; 
+				moveLeft = true;
 				break;
 			case 40: // down
 			case 83: // s
@@ -126,7 +126,7 @@ function init() {
     }
 
     function onMouseWheelScroll(e) {
-        
+
         if (e.deltaY > 0) {
             camera.translateZ(velocity.z * 10);
 
@@ -163,7 +163,7 @@ function animate() {
 
     if (moveLeft) {
         cubePlayer.translateZ(-1);
-    } 
+    }
 
     if (moveForward) {
         cubePlayer.translateX(1);
@@ -171,7 +171,7 @@ function animate() {
 
     if (moveBackward) {
         cubePlayer.translateX(-1);
-    } 
+    }
 
     updateCamera();
 
@@ -191,7 +191,7 @@ function initCameraPosition() {
 }
 
 function render() {
-	renderer.render( scene, camera );
+	renderer.render( window.scene, camera );
 }
 
 module.hot.accept();
