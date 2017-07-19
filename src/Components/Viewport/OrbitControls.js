@@ -895,8 +895,6 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	}
 
-	//
-
 	scope.domElement.addEventListener( 'contextmenu', onContextMenu, false );
 
 	scope.domElement.addEventListener( 'mousedown', onMouseDown, false );

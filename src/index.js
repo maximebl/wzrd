@@ -1,4 +1,4 @@
 import './index.css';
-import './Components/Viewport/OrbitControls.js';
+import './Components/Viewport/OrbitControls';
 import './Components/Viewport/viewport';
-import './Components/WorldEditor/WorldEditor.js';
+import './Components/WorldEditor/WorldEditor';

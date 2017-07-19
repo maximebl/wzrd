@@ -1,6 +1,7 @@
-// import * as THREE from '../../../libs/three.js';
 
 var camera, controls, scene, renderer;
+
+let cubePlayer;
 
 const viewportWidth = window.innerWidth / 2;
 const viewportHeight = window.innerHeight / 2;
@@ -14,28 +15,33 @@ var moveBackward = false;
 var moveLeft = false;
 var moveRight = false;
 var canJump = false;
+let scrollingUp = false;
+let scrollingDown = false;
+
 
 init();
 render(); // remove when using next line for animation loop (requestAnimationFrame)
 animate();
 
 function init() {
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keyup', onKeyUp);
+    window.addEventListener('resize', onWindowResize, false);
+    document.addEventListener('wheel', onMouseWheelScroll);
+
 	scene = new THREE.Scene();
-	scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
+    scene.fog = new THREE.FogExp2(0xcccccc, 0.002);
 	renderer = new THREE.WebGLRenderer();
 	renderer.setClearColor( scene.fog.color );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( viewportWidth, viewportHeight );
-	var container = document.getElementById( 'container' );
-	container.appendChild( renderer.domElement );
+    var container = document.getElementById( 'viewport' );
+    container.appendChild( renderer.domElement );
+
 	camera = new THREE.PerspectiveCamera( 60, viewportWidth / viewportHeight, 1, 1000 );
 	camera.position.z = 500;
-	controls = new THREE.OrbitControls( camera, renderer.domElement );
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
 	controls.addEventListener( 'change', render ); // remove when using animation loop
-// enable animation loop when using damping or autorotation
-	controls.enableDamping = true;
-	controls.dampingFactor = 0.25;
-	controls.enableZoom = false;
 
 // create the ground plane
 	var planeGeometry = new THREE.PlaneGeometry(180, 180);
@@ -47,35 +53,33 @@ function init() {
 	plane.position.x = 0;
 	plane.position.y = 0;
 	plane.position.z = 0;
-
 // add the plane to the scene
 	scene.add(plane);
 // create cube
-	let cubeGeometry = new THREE.CubeGeometry(20,20,20,20,20,20);
+	let cubeGeometry = new THREE.CubeGeometry(20, 20, 20, 20, 20, 20);
 	let cubeMaterial = new THREE.MeshLambertMaterial();
-	let cubePlayer = new THREE.Mesh(cubeGeometry, cubeMaterial);
+	cubePlayer = new THREE.Mesh(cubeGeometry, cubeMaterial);
+	cubePlayer.name = "cubePlayer";
 	cubePlayer.position.x = 0;
-	cubePlayer.position.y = 1;
+	cubePlayer.position.y = 10;
 	cubePlayer.position.z = 0;
-	
-	scene.add(cubePlayer);
+    cubePlayer.add(camera);
+    scene.add(cubePlayer);
 
 // lights
 	var light = new THREE.DirectionalLight( 0xffffff );
 	light.position.set( 1, 1, 1 );
 	scene.add( light );
-	var light = new THREE.DirectionalLight( 0x002288 );
-	light.position.set( -1, -1, -1 );
-	scene.add( light );
-	var light = new THREE.AmbientLight( 0x222222 );
-	scene.add( light );
-//
-	window.addEventListener( 'resize', onWindowResize, false );
+	var light1 = new THREE.DirectionalLight( 0x002288 );
+	light1.position.set( -1, -1, -1 );
+	scene.add( light1 );
+	var light2 = new THREE.AmbientLight( 0x222222 );
+	scene.add( light2 );
 
 // movement
+    initCameraPosition();
 
-	var onKeyDownz = function ( event ) {
-		debugger;
+    function onKeyDown( event ) {
 		switch ( event.keyCode ) {
 			case 38: // up
 			case 87: // w
@@ -100,7 +104,7 @@ function init() {
 		}
 	};
 
-	var onKeyUpz = function ( event ) {
+	function onKeyUp( event ) {
 		switch( event.keyCode ) {
 			case 38: // up
 			case 87: // w
@@ -119,42 +123,75 @@ function init() {
 				moveRight = false;
 				break;
 		}
+    }
 
-	document.addEventListener( 'keydown', onKeyDownz, false );
-	document.addEventListener( 'keyup', onKeyUpz, false );
+    function onMouseWheelScroll(e) {
+        
+        if (e.deltaY > 0) {
+            camera.translateZ(velocity.z * 10);
 
+            scrollingDown = true;
+            console.log('scrolling down :' + scrollingDown);
+        }
+        else {
+            camera.translateZ((velocity.z * 10) * -1);
+
+            console.log('scrolling up :' + scrollingUp);
+            scrollingDown = true;
+        }
+    }
 }
-}
+
 function onWindowResize() {
-	camera.aspect = (viewportWidth / viewportHeight);
-	camera.updateProjectionMatrix();
-	renderer.setSize((viewportWidth, viewportHeight));
+    camera.aspect = (viewportWidth / viewportHeight);
+    camera.updateProjectionMatrix();
+    renderer.setSize((viewportWidth, viewportHeight));
 }
+
 function animate() {
 	requestAnimationFrame( animate );
-	controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
 
 	// movement
 	var time = performance.now();
-	var delta = ( time - prevTime ) / 1000;
-	// var mass = 100.0;
-	// velocity.x -= velocity.x * 10.0 * delta;
-	// velocity.z -= velocity.z * 10.0 * delta;
-	// velocity.y -= 9.8 * mass * delta;
 
-	if ( moveForward ) console.log('forward : ' + velocity.z); velocity.z -= 400.0 * delta;
-	if ( moveBackward ) velocity.z += 400.0 * delta;
-	if ( moveLeft ) velocity.x -= 400.0 * delta;
-	if ( moveRight ) velocity.x += 400.0 * delta;
+    velocity.x = 1.0;
+    velocity.z = 1.0;
 
-	// controls.object.translateX( velocity.x * delta );
-	// controls.object.translateY( velocity.y * delta );
-	// controls.object.translateZ( velocity.z * delta );
-	
+    if (moveRight) {
+        cubePlayer.translateZ(1);
+    }
+
+    if (moveLeft) {
+        cubePlayer.translateZ(-1);
+    } 
+
+    if (moveForward) {
+        cubePlayer.translateX(1);
+    }
+
+    if (moveBackward) {
+        cubePlayer.translateX(-1);
+    } 
+
+    updateCamera();
+
 	render();
 
 	prevTime = time;
 }
+
+function updateCamera() {
+    //controls.update();
+}
+
+function initCameraPosition() {
+    camera.position.x = cubePlayer.position.x;
+    camera.position.z = cubePlayer.position.z;
+    camera.position.y = 200;
+}
+
 function render() {
 	renderer.render( scene, camera );
 }
+
+module.hot.accept();
