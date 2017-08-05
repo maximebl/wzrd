@@ -6,9 +6,14 @@ import GeometryEditor from './GeometryEditor/GeometryEditor.js';
 function WorldEditor() {
   return (
     <MuiThemeProvider>
-      <GeometryEditor />
+        <div id="FlexContainer">
+            <GeometryEditor />
+            <div id="viewport" className="viewport"></div>
+        </div>
     </MuiThemeProvider>
   );
 }
 
 ReactDOM.render(<WorldEditor />, document.querySelector('#WorldEditor'));
+
+module.hot.accept();

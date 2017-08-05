@@ -2,9 +2,10 @@
 var camera, controls, renderer;
 
 let cubePlayer;
+let cubeTest;
 
-const viewportWidth = window.innerWidth / 2;
-const viewportHeight = window.innerHeight / 2;
+const viewportWidth = window.innerWidth;
+const viewportHeight = window.innerHeight;
 
 // movement
 var velocity = new THREE.Vector3();
@@ -41,30 +42,28 @@ function init() {
 	camera = new THREE.PerspectiveCamera( 60, viewportWidth / viewportHeight, 1, 1000 );
 	camera.position.z = 500;
     controls = new THREE.OrbitControls(camera, renderer.domElement);
-	controls.addEventListener( 'change', render ); // remove when using animation loop
+    controls.addEventListener( 'change', render ); // remove when using animation loop
 
 // create the ground plane
 	var planeGeometry = new THREE.PlaneGeometry(180, 180);
 	var planeMaterial = new THREE.MeshLambertMaterial({color: 0xff0000});
 	var plane = new THREE.Mesh(planeGeometry, planeMaterial);
 
-// rotate and position the plane
 	plane.rotation.x = -0.5 * Math.PI;
 	plane.position.x = 0;
 	plane.position.y = 0;
 	plane.position.z = 0;
-// add the plane to the window.scene
 	window.scene.add(plane);
-// create cube
-	let cubeGeometry = new THREE.CubeGeometry(20, 20, 20, 20, 20, 20);
+
+    let cubeGeometry = new THREE.BoxGeometry(20, 20, 20);
 	let cubeMaterial = new THREE.MeshLambertMaterial();
 	cubePlayer = new THREE.Mesh(cubeGeometry, cubeMaterial);
-	cubePlayer.name = "cubePlayer";
-	cubePlayer.position.x = 0;
-	cubePlayer.position.y = 10;
-	cubePlayer.position.z = 0;
     cubePlayer.add(camera);
     window.scene.add(cubePlayer);
+    window.scene.add(camera);
+
+    cubePlayer.name = "cubePlayer";
+
 
 // lights
 	var light = new THREE.DirectionalLight( 0xffffff );
@@ -129,14 +128,10 @@ function init() {
 
         if (e.deltaY > 0) {
             camera.translateZ(velocity.z * 10);
-
             scrollingDown = true;
-            console.log('scrolling down :' + scrollingDown);
         }
         else {
             camera.translateZ((velocity.z * 10) * -1);
-
-            console.log('scrolling up :' + scrollingUp);
             scrollingDown = true;
         }
     }
@@ -173,21 +168,16 @@ function animate() {
         cubePlayer.translateX(-1);
     }
 
-    updateCamera();
-
 	render();
 
 	prevTime = time;
 }
 
-function updateCamera() {
-    //controls.update();
-}
 
 function initCameraPosition() {
     camera.position.x = cubePlayer.position.x;
     camera.position.z = cubePlayer.position.z;
-    camera.position.y = 200;
+    camera.position.y = 60;
 }
 
 function render() {
