@@ -4,8 +4,8 @@ var camera, controls, renderer;
 let cubePlayer;
 let cubeTest;
 
-const viewportWidth = window.innerWidth;
-const viewportHeight = window.innerHeight;
+const viewportWidth = window.innerWidth / 1.2;
+const viewportHeight = window.innerHeight / 1.2;
 
 // movement
 var velocity = new THREE.Vector3();

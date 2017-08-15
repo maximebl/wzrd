@@ -20,47 +20,37 @@ const styleSheet = createStyleSheet('Card', theme => ({
 
 function ScaleCard(props){
     const classes = props.classes;
-
     return(
         <div className={classes.cardContainer}>
-
             <Card className={classes.card}>
                 <CardContent>
-
                     <Typography className={classes.title}>
                         Scale
                     </Typography>
-
                     <TextField
                         value={props.valueX}
                         onChange={props.onXChange}
-                        label="x"
                         type="text"
                         InputProps={{ placeholder: 'Scale the X axis' }}
                         helperText="x"
                         defaultValue={props.defaultValue}
                      />
-
                     <TextField
                         value={props.valueY}
                         onChange={props.onYChange}
-                        label="y"
                         type="text"
                         InputProps={{ placeholder: 'Scale the Y axis' }}
                         helperText="y"
                         defaultValue={props.defaultValue}
                     />
-
                     <TextField
                         value={props.valueZ}
                         onChange={props.onZChange}
-                        label="z"
                         type="text"
                         InputProps={{ placeholder: 'Scale the Z axis' }}
                         helperText="z"
                         defaultValue={props.defaultValue}
                     />
-
                     <CardActions>
                         <Button
                             dense
@@ -69,12 +59,9 @@ function ScaleCard(props){
                             Set
                         </Button>
                     </CardActions>
-
                 </CardContent>
             </Card>
-
         </div>
     )
 }
-
 export default withStyles(styleSheet)(ScaleCard);
