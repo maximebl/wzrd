@@ -1,7 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import store from './store/store';
 import { MuiThemeProvider } from 'material-ui/styles';
 import GeometryEditor from './GeometryEditor/GeometryEditor.js';
+
+const state = store.getState();
+debugger;
 
 function WorldEditor() {
   return (
