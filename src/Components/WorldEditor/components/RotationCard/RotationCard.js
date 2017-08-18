@@ -64,5 +64,4 @@ function RotationCard(props){
         </div>
     )
 }
-
 export default withStyles(styleSheet)(RotationCard);

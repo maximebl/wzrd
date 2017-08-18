@@ -4,8 +4,10 @@ import store from './store/store';
 import { MuiThemeProvider } from 'material-ui/styles';
 import GeometryEditor from './GeometryEditor/GeometryEditor.js';
 
+import {Provider} from 'react-redux';
+import App from '../../App';
+
 const state = store.getState();
-debugger;
 
 function WorldEditor() {
   return (
@@ -18,6 +20,11 @@ function WorldEditor() {
   );
 }
 
-ReactDOM.render(<WorldEditor />, document.querySelector('#WorldEditor'));
+ReactDOM.render(
+    <Provider store={store}>
+        <App/>
+    </Provider>,
+    document.querySelector('#WorldEditor')
+);
 
 module.hot.accept();
