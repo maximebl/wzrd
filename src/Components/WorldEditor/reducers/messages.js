@@ -1,4 +1,4 @@
-import {TODO_ADD, TODOS_LOAD, TODO_REPLACE, TODO_REMOVE} from './transforms';
+import {TODO_ADD, TODOS_LOAD, TODO_REPLACE, TODO_REMOVE} from './todoReducer';
 
 const MESSAGE_SHOW = 'MESSAGE_SHOW';
 

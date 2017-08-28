@@ -1,24 +1,18 @@
 "use strict";
 import React from 'react';
+import {connect} from 'react-redux'
 import ScaleCard from '../components/ScaleCard/ScaleCard';
 import RotationCard from '../components/RotationCard/RotationCard';
+import {updateScale, updateRotation} from "../reducers/transforms";
+
 var ReactGridLayout = require('react-grid-layout');
 
 const defaultScale = 1.0;
 const defaultRotation = 0;
 
-export default class GeometryEditor extends React.Component {
+class GeometryEditor extends React.Component {
     constructor(props){
         super(props);
-        this.state = {
-            scaleX: defaultScale,
-            scaleY: defaultScale,
-            scaleZ: defaultScale,
-
-            rotX: defaultRotation,
-            rotY: defaultRotation,
-            rotZ: defaultRotation,
-        };
         this.clickScaleHandler = this.clickScaleHandler.bind(this);
         this.clickRotationHandler = this.clickRotationHandler.bind(this);
         this.handleScaleXChange = this.handleScaleXChange.bind(this);
@@ -31,54 +25,39 @@ export default class GeometryEditor extends React.Component {
     }
     clickScaleHandler(){
         let objectToScale = window.scene.getObjectByName( "cubePlayer" );
-        objectToScale.scale.x = this.state.scaleX;
-        objectToScale.scale.y = this.state.scaleY;
-        objectToScale.scale.z = this.state.scaleZ;
+        objectToScale.scale.x = this.props.scale.x;
+        objectToScale.scale.y = this.props.scale.y;
+        objectToScale.scale.z = this.props.scale.z;
     }
-
     clickRotationHandler(){
         let objectToRotate = window.scene.getObjectByName( "cubePlayer" );
-        objectToRotate.rotation.x = this.state.rotX;
-        objectToRotate.rotation.y = this.state.rotY;
-        objectToRotate.rotation.z = this.state.rotZ;
+        objectToRotate.rotation.x = this.props.rotation.x;
+        objectToRotate.rotation.y = this.props.rotation.y;
+        objectToRotate.rotation.z = this.props.rotation.z;
     }
-
     handleScaleXChange(event){
-        let inputValue = event.target.value;
-        this.setState({
-            scaleX:inputValue
-        });
+        let newScaleX = event.target.value;
+        this.props.updateScale({x: newScaleX});
     };
     handleScaleYChange(event){
-        let inputValue = event.target.value;
-        this.setState({
-            scaleY:inputValue
-        });
+        let newScaleY = event.target.value;
+        this.props.updateScale({y: newScaleY});
     };
     handleScaleZChange(event){
-        let inputValue = event.target.value;
-        this.setState({
-            scaleZ:inputValue
-        });
+        let newScaleZ = event.target.value;
+        this.props.updateScale({z: newScaleZ});
     };
-
     handleRotXChange(event){
-        let inputValue = event.target.value;
-        this.setState({
-            rotX:inputValue
-        });
+        let newRotX = event.target.value;
+        this.props.updateRotation({x: newRotX})
     };
     handleRotYChange(event){
-        let inputValue = event.target.value;
-        this.setState({
-            rotY:inputValue
-        });
+        let newRotY = event.target.value;
+        this.props.updateRotation({y: newRotY})
     };
     handleRotZChange(event){
-        let inputValue = event.target.value;
-        this.setState({
-            rotZ:inputValue
-        });
+        let newRotZ = event.target.value;
+        this.props.updateRotation({z: newRotZ})
     };
 
     render(){
@@ -89,9 +68,9 @@ export default class GeometryEditor extends React.Component {
                     <ReactGridLayout className="layout" cols={12} rowHeight={30} width={1500} isBounded={true}>
                         <div key="c" data-grid={{x: 0, y: 0, w: 4, h: 8}}>
                             <ScaleCard
-                                valueX={this.state.scaleX}
-                                valueY={this.state.scaleY}
-                                valueZ={this.state.scaleZ}
+                                valueX={this.props.scale.x}
+                                valueY={this.props.scale.y}
+                                valueZ={this.props.scale.z}
                                 onXChange={this.handleScaleXChange}
                                 onYChange={this.handleScaleYChange}
                                 onZChange={this.handleScaleZChange}
@@ -100,12 +79,13 @@ export default class GeometryEditor extends React.Component {
                         </div>
                         <div key="d" data-grid={{x: 0, y: 1, w: 4, h: 8}}>
                             <RotationCard
-                                valueX={this.state.rotX}
-                                valueY={this.state.rotY}
-                                valueZ={this.state.rotZ}
+                                valueX={this.props.rotX}
+                                valueY={this.props.rotY}
+                                valueZ={this.props.rotZ}
                                 onXChange={this.handleRotXChange}
                                 onYChange={this.handleRotYChange}
                                 onZChange={this.handleRotZChange}
+                                defaultValue={this.defaultRotation}
                                 onClick={this.clickRotationHandler}/>
                         </div>
                     </ReactGridLayout>
@@ -115,3 +95,7 @@ export default class GeometryEditor extends React.Component {
         )
     }
 }
+export default connect(
+    (state) => ({scale: state.transforms.scale, rotation: state.transforms.rotation}),
+    {updateScale, updateRotation}
+)(GeometryEditor)

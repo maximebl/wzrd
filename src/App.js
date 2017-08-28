@@ -1,10 +1,14 @@
 import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import './App.css';
+import {Provider} from 'react-redux';
+import store from './Components/WorldEditor/store/store';
 import TodoForm from './components/TodoForm';
 import TodoList from './components/TodoList';
 import Message from "./Components/Message";
 import Footer from './Components/footer';
+import {WorldEditor} from "./Components/WorldEditor/WorldEditor"
 
 class App extends Component {
     render() {
@@ -23,8 +27,20 @@ class App extends Component {
                         <Footer/>
                     </div>
                 </Router>
+                <WorldEditor/>
             </div>
         );
     }
 }
+
+const state = store.getState();
+
+ReactDOM.render(
+    <Provider store={store}>
+        <App/>
+    </Provider>,
+    document.querySelector('#WorldEditor')
+);
+
+
 export default App;

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {updateCurrent, saveTodo} from './WorldEditor/reducers/transforms';
+import {updateCurrent, saveTodo} from './WorldEditor/reducers/todoReducer';
 
 class TodoForm extends Component{
     handleInputChange = (evt) => {

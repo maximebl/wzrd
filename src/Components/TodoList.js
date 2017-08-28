@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux';
-import {fetchTodos, toggleTodo, deleteTodo, getVisibleTodos} from './WorldEditor/reducers/transforms';
+import {fetchTodos, toggleTodo, deleteTodo, getVisibleTodos} from './WorldEditor/reducers/todoReducer';
 
 const TodoItem = ({id, name, isComplete, toggleTodo, deleteTodo}) => (
     <li>
