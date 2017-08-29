@@ -15,7 +15,7 @@ class App extends Component {
         return (
             <div className="App">
                 <div className="App-header">
-                    <h2>Welcome to React with Redux</h2>
+                    <h2>WZRD Editor</h2>
                 </div>
                 <Router>
                     <div className="Todo-App">
@@ -33,8 +33,6 @@ class App extends Component {
     }
 }
 
-const state = store.getState();
-
 ReactDOM.render(
     <Provider store={store}>
         <App/>
@@ -42,5 +40,3 @@ ReactDOM.render(
     document.querySelector('#WorldEditor')
 );
 
-
-export default App;

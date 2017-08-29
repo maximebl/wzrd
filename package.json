@@ -53,6 +53,7 @@
     "babel-preset-env": "^1.6.0",
     "babel-preset-react": "^6.24.1",
     "json-server": "^0.12.0",
+    "recompose": "^0.25.0",
     "redux-devtools-extension": "^2.13.2"
   }
 }
