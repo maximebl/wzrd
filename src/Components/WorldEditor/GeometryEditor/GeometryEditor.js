@@ -63,7 +63,7 @@ const clickScaleHandler = () => {
     objectToScale.scale.z = this.props.scale.z;
 }
 
-function handleScaleXChange (event) {
+function handleScaleXChange (event, props) {
     let newScaleX = event.target.value;
     props.updateScale({x: newScaleX});
 }
