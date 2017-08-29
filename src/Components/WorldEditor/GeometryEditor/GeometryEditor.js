@@ -51,7 +51,7 @@ const GeometryEditor = compose(
         (state) => ({scale: state.transforms.scale, rotation: state.transforms.rotation}),
         {updateScale, updateRotation}
     ),
-    withHandlers({handleScaleXChange: ({handleScaleXChange}) => (event) => handleScaleXChange(event)})
+    withHandlers({handleScaleXChange: props => event => handleScaleXChange(event, props)})
 )(GeometryEditorBase)
 
 export default GeometryEditor;
