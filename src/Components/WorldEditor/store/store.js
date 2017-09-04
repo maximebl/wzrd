@@ -1,15 +1,12 @@
 import {createStore, applyMiddleware, combineReducers} from 'redux';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
-import todoReducer from '../reducers/todoReducer';
-import messageReducer from '../reducers/messages';
 import transforms from "../reducers/transforms";
-
+import canvasOverlay from "../../ShaderEditor/reducers/canvasOverlay";
 
 const reducer = combineReducers({
-    todo: todoReducer,
-    message: messageReducer,
-    transforms: transforms
+    transforms: transforms,
+    canvasOverlay: canvasOverlay
 })
 
 export default createStore(

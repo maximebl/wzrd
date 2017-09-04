@@ -1,33 +1,26 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
 import './App.css';
 import {Provider} from 'react-redux';
 import store from './Components/WorldEditor/store/store';
-import TodoForm from './components/TodoForm';
-import TodoList from './components/TodoList';
-import Message from "./Components/Message";
-import Footer from './Components/footer';
-import {WorldEditor} from "./Components/WorldEditor/WorldEditor"
+import WorldEditor from "./Components/WorldEditor/WorldEditor"
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
+import {ShaderEditor} from "./Components/ShaderEditor/ShaderEditor";
 
 class App extends Component {
     render() {
         return (
             <div className="App">
-                <div className="App-header">
-                    <h2>WZRD Editor</h2>
-                </div>
                 <Router>
-                    <div className="Todo-App">
-                        <Message />
-                        <TodoForm />
-                        <Route path="/:filter?" render={({match}) => (
-                            <TodoList filter={match.params.filter}/>
-                        )} />
-                        <Footer/>
+                    <div>
+                        <ul>
+                            <li><Link to="/">World Editor</Link></li>
+                            <li><Link to="/ShaderEditor">Shader Editor</Link></li>
+                        </ul>
+                        <Route exact path="/" component={WorldEditor}/>
+                        <Route path="/ShaderEditor" component={ShaderEditor}/>
                     </div>
                 </Router>
-                <WorldEditor/>
             </div>
         );
     }

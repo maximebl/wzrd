@@ -1,5 +1,5 @@
 
-var camera, controls, renderer;
+var camera, controls ;
 
 let cubePlayer;
 let cubeTest;
@@ -29,19 +29,18 @@ function init() {
     document.addEventListener('keyup', onKeyUp);
     window.addEventListener('resize', onWindowResize, false);
     document.addEventListener('wheel', onMouseWheelScroll);
-
 	window.scene = new THREE.Scene();
     window.scene.fog = new THREE.FogExp2(0xcccccc, 0.002);
-	renderer = new THREE.WebGLRenderer();
-	renderer.setClearColor( window.scene.fog.color );
-	renderer.setPixelRatio( window.devicePixelRatio );
-	renderer.setSize( viewportWidth, viewportHeight );
+	window.renderer = new THREE.WebGLRenderer();
+	window.renderer.setClearColor( window.scene.fog.color );
+	window.renderer.setPixelRatio( window.devicePixelRatio );
+	window.renderer.setSize( viewportWidth, viewportHeight );
     var container = document.getElementById( 'viewport' );
-    container.appendChild( renderer.domElement );
+    container.appendChild( window.renderer.domElement );
 
 	camera = new THREE.PerspectiveCamera( 60, viewportWidth / viewportHeight, 1, 1000 );
 	camera.position.z = 500;
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls = new THREE.OrbitControls(camera, window.renderer.domElement);
     controls.addEventListener( 'change', render ); // remove when using animation loop
 
 // create the ground plane
@@ -140,7 +139,7 @@ function init() {
 function onWindowResize() {
     camera.aspect = (viewportWidth / viewportHeight);
     camera.updateProjectionMatrix();
-    renderer.setSize((viewportWidth, viewportHeight));
+    window.renderer.setSize((viewportWidth, viewportHeight));
 }
 
 function animate() {
@@ -181,7 +180,7 @@ function initCameraPosition() {
 }
 
 function render() {
-	renderer.render( window.scene, camera );
+	window.renderer.render( window.scene, camera );
 }
 
 module.hot.accept();
