@@ -16,6 +16,7 @@ export default (state = initState, action) => {
     switch (action.type) {
         case UPDATE_CANVAS_DIMENSIONS:
             return {...state, canvasDimensions: {...state.canvasDimensions, ...action.payload}}
+
         default:
             return state
     }

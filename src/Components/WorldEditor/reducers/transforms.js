@@ -24,6 +24,7 @@ export default (state = initState, action) => {
     switch (action.type) {
         case UPDATE_SCALE:
             return {...state, scale: {...state.scale, ...action.payload}}
+
         case UPDATE_ROTATION:
             return {...state, rotation: {...state.rotation, ...action.payload}}
         default:
