@@ -4,10 +4,9 @@
   "description": "web game tools",
   "main": "index.js",
   "scripts": {
-    "start": "npm-run-all --parallel security-check dev-server open:src",
+    "build": "npm-run-all --parallel dev-server open:src",
     "open:src": "babel-node buildScripts/srcServer.js",
-    "security-check": "nsp check",
-    "test": "test",
+    "test": "jasmine",
     "dev-server": "json-server -p 8080 db.json"
   },
   "repository": {
@@ -26,36 +25,42 @@
   "dependencies": {
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
-    "babel-loader": "^7.0.0",
     "babel-preset-latest": "^6.24.1",
     "css-loader": "^0.28.1",
     "express": "^4.15.2",
+    "lodash": "^4.17.4",
     "material-ui": "^1.0.0-alpha.20",
     "npm-run-all": "^4.0.2",
     "open": "0.0.5",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
+    "ramda": "^0.25.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
     "react-grid-layout": "^0.14.7",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.1.2",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
-    "rxjs": "^5.4.3",
+    "rimraf": "^2.6.2",
+    "rxjs": "^5.5.6",
     "style-loader": "^0.17.0",
+    "wallaby-webpack": "^3.9.4",
     "webpack": "^1.15.0",
     "webpack-dev-middleware": "1.8.4",
     "webpack-hot-middleware": "2.13.0",
     "webpack-md5-hash": "0.0.5"
   },
   "devDependencies": {
+    "babel-loader": "^7.1.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-es2015-spread": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-env": "^1.6.0",
     "babel-preset-react": "^6.24.1",
+    "jasmine": "^3.0.0",
     "json-server": "^0.12.0",
     "react-grid-layout-stateless": "^0.13.9",
-    "recompose": "^0.25.0",
-    "redux-devtools-extension": "^2.13.2"
+    "recompose": "^0.26.0",
+    "redux-devtools-extension": "^2.13.2",
+    "redux-observable": "^0.16.0"
   }
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import {compose, lifecycle} from 'recompose';
 import {ShaderCard} from "../ShaderCard/ShaderCard";
 
-const AddBase = (props) => {
+const VectorTwoBase = (props) => {
     return(
         <ShaderCard
             id={props.id}
@@ -12,10 +12,10 @@ const AddBase = (props) => {
     )
 }
 
-export const Add = compose(
+export const VectorTwo = compose(
     lifecycle({
         componentDidMount: function() {
 
         },
     })
-)(AddBase);
+)(VectorTwoBase);

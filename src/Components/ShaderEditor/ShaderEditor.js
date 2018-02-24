@@ -1,34 +1,34 @@
 import React from 'react';
 import {connect} from 'react-redux'
 import './ShaderEditor.css';
-import {compose, lifecycle} from 'recompose';
-import {Observable} from 'rxjs';
-import {updateCanvasDimensions} from "./reducers/canvasOverlay";
+import {compose, createEventHandler, lifecycle, setObservableConfig, withHandlers} from 'recompose';
+import {updateCanvasDimensions, addLink} from "./reducers/canvasOverlay";
 import {CanvasOverlay} from "./components/canvasOverlay";
-import {addScalar} from "./reducers/scalars";
-import {addOperator} from "./reducers/operators";
-import {Scalar} from "./components/Scalar/Scalar";
-import {Add} from "./components/Add/Add";
+import {addScalar, addVectorTwo} from "./reducers/operands";
+import {addAddition} from "./reducers/operators";
+import {Scalar} from "./components/Operands/Scalar";
+import {Addition} from "./components/Operators/Addition";
+import {generateId} from "../../utils/general";
+import {addNode} from "./reducers/nodes";
+import config from "recompose/rxjsObservableConfig";
 
-const styleSheet = {
-    redCard: {
+setObservableConfig(config);
+
+let styleSheet = {
+    operandCard: {
         position: 'absolute',
         backgroundColor: 'red',
-        height: 200,
-        width: 200,
         left: 0
     },
-    blueCard: {
+    operatorCard: {
         position: 'absolute',
         backgroundColor: 'blue',
-        height: 200,
-        width: 200,
         left: 250
     },
     container: {
         position: 'relative',
         width: 1000,
-        height: 400,
+        height: 1000,
         backgroundColor: 'pink'
     },
     canvasOverlay:{
@@ -38,140 +38,128 @@ const styleSheet = {
     }
 }
 
-function ShaderEditorBase(props) {
-    return (
-        <div>
-            <div className="ShaderEditor-header">
-                <h2>Shader Editor</h2>
-            </div>
-            <div id="container" style={styleSheet.container}>
-                {props.scalars.map(scalar=> (
-                    <Scalar key={scalar.id + 'key'}
-                            id={scalar.id}
-                            value={scalar.value}
-                            styleSheet={scalar.styleSheet}
-                            container={scalar.container}/>
-                    ))}
-                {props.operators.map(operator=> (
-                    <Add key={operator.id + 'key'}
-                         id={operator.id}
-                         styleSheet={operator.styleSheet}
-                         container={operator.container}/>
-                ))}
-                <CanvasOverlay
-                    width={props.canvasWidth}
-                    height={props.canvasHeight}
-                    style={styleSheet.canvasOverlay}>
-                </CanvasOverlay>
-            </div>
+export const { handler: mouseMove, stream: $containerMouseMoves } = createEventHandler();
+export const { handler: mouseUp, stream: $containerMouseUps} = createEventHandler();
+
+const ShaderEditorBase = (props) => (
+    <div>
+        <div className="ShaderEditor-header">
+            <h2>Shader Editor</h2>
         </div>
-    );
-}
+
+        {/*Menu component*/}
+        <button onClick={props.newNode('scalar')}>Scalar node</button>
+        <button onClick={props.newNode('addition')}>Addition node</button>
+
+        <div id="container" style={styleSheet.container} onMouseMove={mouseMove} onMouseUp={mouseUp}>
+            {props.nodes.map(node => {
+                if (node.type === 'scalar') {
+                    return <Scalar key={node.id}
+                                   id={node.id}
+                                   owner={node.id}
+                                   value={node.value}
+                                   styleSheet={node.styleSheet}
+                                   container={node.container}
+                    />
+                }
+            }
+            )}
+
+            {props.nodes.map(node => {
+                    if (node.type === 'addition') {
+                        return <Addition key={node.id}
+                                         id={node.id}
+                                         owner={node.id}
+                                         styleSheet={node.styleSheet}
+                                         container={node.container}
+                        />
+                    }
+                }
+            )}
+
+            <CanvasOverlay
+                width={props.canvasWidth}
+                height={props.canvasHeight}
+                style={styleSheet.canvasOverlay}>
+            </CanvasOverlay>
+        </div>
+
+    </div>
+)
 
 export const ShaderEditor = compose(
     connect((state) => (
             {
-                scalars: state.scalars,
-                operators: state.operators,
+                nodes: state.nodes,
                 canvasWidth: state.canvasOverlay.canvasDimensions.width,
-                canvasHeight: state.canvasOverlay.canvasDimensions.height
+                canvasHeight: state.canvasOverlay.canvasDimensions.height,
+                nodeWidth: state.canvasOverlay.nodeDimensions.width,
+                nodeHeight: state.canvasOverlay.nodeDimensions.height
             }),
-            {updateCanvasDimensions, addScalar, addOperator}
+            {updateCanvasDimensions, addScalar, addAddition, addVectorTwo, addLink, addNode}
     ),
     lifecycle({
-        componentDidMount: function() {
+        componentWillMount: function() {
+            styleSheet.container.width = this.props.canvasWidth;
+            styleSheet.container.height = this.props.canvasHeight;
 
-            container = Container();
+            styleSheet.operandCard.width = this.props.nodeWidth;
+            styleSheet.operandCard.height = this.props.nodeHeight;
 
-            this.props.updateCanvasDimensions({
-                width: container.width(),
-                height: container.height()
-            });
-
-            this.props.addScalar({
-                id: 1,
-                value: 2,
-                container: container.element(),
-                styleSheet: styleSheet.redCard,
-                linkedTo: []
-            });
-
-            this.props.addOperator({
-                id: 2,
-                container: container.element(),
-                styleSheet: styleSheet.blueCard
-            });
-
-        },
-        componentDidUpdate(){
-            // drawCurve();
+            styleSheet.operatorCard.width = this.props.nodeWidth;
+            styleSheet.operatorCard.height = this.props.nodeHeight;
         }
+    }),
+    withHandlers({
+        newNode: props => type => event => {
+            newNode(props, type, event);
+        },
     }),
 )(ShaderEditorBase);
 
-let container;
+const newNode = (props, type, event) => {
+    switch (type) {
+    case 'scalar':
+        let scalarNode = factoryNode('scalar');
+        scalarNode.styleSheet = styleSheet.operandCard;
+        props.addNode(scalarNode);
+        break;
 
-const Container = () => {
-    let el = document.getElementById('container');
-
-    let publicAPI = {
-        element: () => el,
-        width: () => el.getBoundingClientRect().width,
-        height: () => el.getBoundingClientRect().height
+    case 'addition':
+        let additionNode = factoryNode('addition');
+        additionNode.styleSheet = styleSheet.operatorCard;
+        props.addNode(additionNode);
+        break;
+    default:
     }
-    return publicAPI;
 }
 
-const Draw = () => {
-  // get output pos from Scalar
-  // get input pos from Add
+const factoryNode = (type) => ({
+    id: generateId(),
+    type: type,
+    container: document.getElementById('canvas'),
+    inputs: [],
+    output: [],
+    styleSheet: {}
+})
+
+function newLink(nodeA, nodeB){
+    addLink({input: nodeA, output: nodeB});
 }
 
-const drawCurve = () => {
-    let curveCanvas = document.getElementById('curveCanvas');
-    let ctx = curveCanvas.getContext("2d");
+function drawLink(targetCanvas, container, startNode, endNode){
+    let ctx = targetCanvas.getContext("2d");
 
-    let blueCard = document.getElementById('blueCard');
-    let redCard = document.getElementById('redCard');
-    let container = document.getElementById('container');
+    let startNodeX = (startNode.getBoundingClientRect().left - container.offsetLeft) + (startNode.getBoundingClientRect().width  / 2);
+    let startNodeY = (startNode.getBoundingClientRect().bottom - container.offsetTop) - (startNode.getBoundingClientRect().height / 2);
 
-    let startX = redCard.getBoundingClientRect().left + (redCard.getBoundingClientRect().width / 2);
-    let startY = (redCard.getBoundingClientRect().bottom - container.offsetTop) - (redCard.getBoundingClientRect().height / 2);
+    let endNodeX = (endNode.getBoundingClientRect().left - container.offsetLeft) + (endNode.getBoundingClientRect().width  / 2);
+    let endNodeY = (endNode.getBoundingClientRect().bottom - container.offsetTop) - (endNode.getBoundingClientRect().height / 2);
 
-    let endX = 0;
-    let endY = 0;
-
-    let cpHandle = {x:0, y:0};
-
-    let $cpMouseDowns = Observable
-        .fromEvent(container, 'mousedown')
-        .subscribe((e) => {
-            cpHandle = {x: e.clientX / 2, y: (e.clientY - e.currentTarget.offsetTop) / 2}
-            ctx.fillStyle = 'yellow';
-            ctx.fillRect(cpHandle.x, cpHandle.y, 10, 10);
-        });
-
-    let $cpMouseMoves = Observable
-        .fromEvent(container, 'mousemove')
-        .subscribe((e) => {
-            endX = e.clientX;
-            endY = e.clientY - e.currentTarget.offsetTop;
-        });
-
-    let $cpMouseUps = Observable
-        .fromEvent(container, 'mouseup')
-        .subscribe((e) => {
-            draw();
-        });
-
-    const draw = () => {
-        ctx.beginPath();
-        ctx.moveTo(startX, startY);
-        ctx.quadraticCurveTo(cpHandle.x, cpHandle.y, endX, endY);
-
-        ctx.strokeStyle = 'green';
-        ctx.stroke();
-    }
-
+    ctx.beginPath();
+    ctx.moveTo(startNodeX, startNodeY);
+    ctx.lineTo(endNodeX, endNodeY);
+    ctx.strokeStyle = 'green';
+    ctx.stroke();
 }
 

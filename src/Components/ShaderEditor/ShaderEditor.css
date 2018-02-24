@@ -3,5 +3,14 @@
     height: 150px;
     padding: 20px;
     color: white;
+}
 
+.validConnection{
+    background-color: greenyellow;
+}
+.invalidConnection{
+    background-color: red;
+}
+.noConnection{
+    background-color: gray;
 }

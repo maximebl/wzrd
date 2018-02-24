@@ -1,10 +1,11 @@
-const ADD_SCALAR = 'ADD_SCALAR';
 
-export const addScalar = (val) => ({type: ADD_SCALAR, payload: val});
+const ADD_OUTPUT = 'ADD_OUTPUT';
+
+export const addOutput = (val) => ({type: ADD_OUTPUT, payload: val});
 
 export default (state = [], action) => {
     switch (action.type) {
-        case ADD_SCALAR:
+        case ADD_OUTPUT:
             return [
                 ...state,
                 action.payload

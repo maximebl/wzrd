@@ -1,14 +1,20 @@
-const ADD_OPERATOR = 'ADD_OPERATOR';
+import {generateId} from "../../../utils/general";
 
-export const addOperator = (val) => ({type: ADD_OPERATOR, payload: val});
+const defaultState = {
+    additions: []
+}
 
-export default (state = [], action) => {
+const ADD_ADDITION = 'ADD_ADDITION';
+
+export const addAddition = (val) => ({type: ADD_ADDITION, payload: val});
+
+export default (state = defaultState, action) => {
     switch (action.type) {
-        case ADD_OPERATOR:
-            return [
-                ...state,
-                action.payload
-            ]
+        case ADD_ADDITION:
+            action.payload.id = generateId();
+            return Object.assign({}, state, {additions: [...state.additions, action.payload]})
+        break;
+
         default:
             return state
     }

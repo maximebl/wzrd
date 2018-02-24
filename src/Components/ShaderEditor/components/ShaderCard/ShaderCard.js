@@ -1,77 +1,34 @@
 import React from 'react';
-import {Observable} from 'rxjs';
-import {compose, lifecycle} from 'recompose';
+import {connect} from 'react-redux';
+import {compose, setObservableConfig} from 'recompose';
+import {InputPin} from "./inputPin";
+import {OutputPin} from "./outputPin";
+import {addInput} from "../../reducers/inputs";
+import config from "recompose/rxjsObservableConfig";
+import {DragZone} from "../../Utilities/DragZone";
+import {times} from "ramda";
 
-const tmpStyle = {
-    output: {
-        position: 'relative',
-        backgroundColor: 'gray',
-        height: 20,
-        width: 20,
-        left: 200
-    },
-    input: {
-        position: 'relative',
-        backgroundColor: 'gray',
-        height: 20,
-        width: 20,
-        left: 0
-    }
+setObservableConfig(config);
+
+let localStyleSheet = {
+    backgroundColor: 'red',
+    width: 200,
+    height: 200
 }
 
-const ShaderCardBase = (props) => {
-    return(
-        <div id={props.id} style={props.styleSheet}>
-            <div id="input" style={tmpStyle.input}>input</div>
-            <div id="output" style={tmpStyle.output}>output</div>
+const ShaderCardBase = (props) => (
+    <DragZone width={200} height={200}>
+        <div style={localStyleSheet}>
+            {times((val) => <InputPin key={val} index={val} owner={props.owner}/>, props.inputCount)}
+            {times((val) => <OutputPin key={val} index={val} owner={props.owner}></OutputPin>, props.outputCount)}
         </div>
-    )
-}
+    </DragZone>
+)
 
 export const ShaderCard = compose(
-    lifecycle({
-        componentDidMount: function() {
-            let el = document.getElementById(this.props.id);
-            const ShaderCard = factoryShaderCard(el);
-            ShaderCard.dragAndDrop(el, this.props.container)
-        },
-    })
+    connect((state) => (
+            {inputs: state.inputs}
+        ),
+        {addInput}
+    )
 )(ShaderCardBase);
-
-const proto = {
-    dragAndDrop(el, container) {
-        let $mouseMoves = Observable.fromEvent(container, 'mousemove');
-        let $mouseUps = Observable.fromEvent(container, 'mouseup');
-        let $mouseDowns = Observable.fromEvent(el, 'mousedown');
-
-        let $drags = $mouseDowns.mergeMap((e) => {
-            return $mouseMoves.takeUntil($mouseUps)
-        });
-
-        $drags.subscribe((e) => {
-            el.style.left = e.clientX + 'px';
-            el.style.top = (e.clientY - e.currentTarget.offsetTop) + 'px';
-        });
-    }
-};
-
-function factoryShaderCard (el) {
-    return Object.create(proto, {
-        element: {
-            writable: true,
-            configurable: true,
-            value: el
-        },
-        width: {
-            writable: true,
-            configurable: true,
-            value: el.getBoundingClientRect().width
-        },
-        height: {
-            writable: true,
-            configurable: true,
-            value: el.getBoundingClientRect().height
-        }
-    })
-}
-
