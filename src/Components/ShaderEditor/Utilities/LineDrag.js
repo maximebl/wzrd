@@ -1,11 +1,10 @@
 import React from 'react';
-import {createEventHandler, compose, withHandlers, lifecycle, withProps} from "recompose";
+import {compose, withHandlers, lifecycle} from "recompose";
 import {Observable} from "rxjs";
 import {clearLine, drawLineToCursor} from "../../../utils/rendering";
 
 const onSubscription = card => e => {
     drawLineToCursor(e, card);
-    card.style.backgroundColor = "greenyellow";
 };
 
 const onCompleted = (e) => {
@@ -13,9 +12,10 @@ const onCompleted = (e) => {
 };
 
 const onError = (e) => {
+    console.log('LineDrag Error : ', e)
 };
 
-const createDragInstance = (card, $drags) => {
+const createLineDragInstance = (card, $drags) => {
     $drags.subscribe(
             onSubscription(card),
             onError,
@@ -32,26 +32,20 @@ export const withLineDrag =
                 getCurrentCard: () => () => card
             }
         }),
-        withProps(() => {
-            const {handler: inputpinmousedowns, stream: $linedragmousedown} = createEventHandler();
-            const {handler: inputpinmouseups, stream: $inputpinmouseup} = createEventHandler();
-            return ({inputpinmousedowns, $linedragmousedown, inputpinmouseups, $inputpinmouseup})
-        }),
         lifecycle({
             componentDidMount: function() {
-                const {getCurrentCard} = this.props;
-                let card = getCurrentCard();
-
+                let card = this.props.getCurrentCard();
                 let container = document.getElementById('container');
 
                 let $containerMouseMoves = Observable.fromEvent(container, 'mousemove').do((e) => { e.stopImmediatePropagation() });
                 let $containerMouseUps = Observable.fromEvent(container, 'mouseup').do((e) => { e.stopImmediatePropagation() });
-                let $cardMousedowns = Observable.fromEvent(card, 'mousedown').do((e) => { e.stopImmediatePropagation() });
+
+                let $cardMousedowns = Observable.fromEvent(card, 'mousedown').do((e) => { e.stopImmediatePropagation(); e.preventDefault() });
 
                 let $drags = $containerMouseMoves.takeUntil($containerMouseUps);
 
                 $cardMousedowns.subscribe(() => {
-                    createDragInstance(card, $drags);
+                    createLineDragInstance(card, $drags);
                 })
             }
         })

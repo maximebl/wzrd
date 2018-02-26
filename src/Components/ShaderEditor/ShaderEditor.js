@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux'
 import './ShaderEditor.css';
-import {compose, createEventHandler, lifecycle, setObservableConfig, withHandlers} from 'recompose';
+import {compose, lifecycle, setObservableConfig, withHandlers} from 'recompose';
 import {updateCanvasDimensions, addLink} from "./reducers/canvasOverlay";
 import {CanvasOverlay} from "./components/canvasOverlay";
 import {addScalar, addVectorTwo} from "./reducers/operands";
@@ -38,9 +38,6 @@ let styleSheet = {
     }
 }
 
-export const { handler: mouseMove, stream: $containerMouseMoves } = createEventHandler();
-export const { handler: mouseUp, stream: $containerMouseUps} = createEventHandler();
-
 const ShaderEditorBase = (props) => (
     <div>
         <div className="ShaderEditor-header">
@@ -51,7 +48,7 @@ const ShaderEditorBase = (props) => (
         <button onClick={props.newNode('scalar')}>Scalar node</button>
         <button onClick={props.newNode('addition')}>Addition node</button>
 
-        <div id="container" style={styleSheet.container} onMouseMove={mouseMove} onMouseUp={mouseUp}>
+        <div id="container" style={styleSheet.container}>
             {props.nodes.map(node => {
                 if (node.type === 'scalar') {
                     return <Scalar key={node.id}
