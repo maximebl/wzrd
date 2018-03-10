@@ -50,16 +50,16 @@ export const DragZone =
         }),
         lifecycle({
             componentDidMount: function() {
-                let card = this.props.getCurrentCard();
+                const card = this.props.getCurrentCard();
 
-                let container = document.getElementById('container');
+                const container = document.getElementById('container');
 
-                let $containerMouseMoves = Observable.fromEvent(container, 'mousemove').do((e) => { e.stopImmediatePropagation() });
-                let $containerMouseUps = Observable.fromEvent(container, 'mouseup').do((e) => { e.stopImmediatePropagation() });
+                const $containerMouseMoves = Observable.fromEvent(container, 'mousemove').do((e) => { e.stopImmediatePropagation() });
+                const $containerMouseUps = Observable.fromEvent(container, 'mouseup').do((e) => { e.stopImmediatePropagation() });
 
-                let $cardMouseDowns = Observable.fromEvent(card, 'mousedown').do((e) => { e.stopImmediatePropagation(); e.preventDefault() });
+                const $cardMouseDowns = Observable.fromEvent(card, 'mousedown').do((e) => { e.stopImmediatePropagation(); e.preventDefault() });
 
-                let $drags = $containerMouseMoves.takeUntil($containerMouseUps)
+                const $drags = $containerMouseMoves.takeUntil($containerMouseUps)
 
                 $cardMouseDowns.subscribe(() => {
                     createDragZoneInstance(card, $drags, container);

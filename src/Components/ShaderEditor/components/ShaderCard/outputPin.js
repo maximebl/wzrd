@@ -2,7 +2,7 @@ import React from 'react';
 import {compose} from 'recompose';
 import {connect} from 'react-redux';
 import {addOutput} from "../../reducers/outputs";
-import {withLineDrag} from "../../Utilities/LineDrag";
+import {withLineDrag} from "../../Utilities/withLineDrag";
 
 const localStyleSheet = {
     backgroundColor: 'gray',

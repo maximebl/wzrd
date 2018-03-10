@@ -3,7 +3,7 @@ import {compose} from 'recompose';
 import {addInput} from "../../reducers/inputs";
 import {connect} from 'react-redux';
 import {withDragAndDrop} from "../pinDrag";
-import {withLineDrag} from "../../Utilities/LineDrag";
+import {withLineDrag} from "../../Utilities/withLineDrag";
 
 const styleSheet = {
 
